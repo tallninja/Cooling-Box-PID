@@ -7,9 +7,9 @@
 #define IN2 0           // D3
 
 // constants for PID parameters
-const float kp = 2.0; // Proportional gain
-const float ki = 0.1; // Integral gain
-const float kd = 1.0; // Derivative gain
+const float kp = 30.0;  // Proportional gain
+const float ki = 0.0001; // Integral gain
+const float kd = 1.0;   // Derivative gain
 
 const float setpointTemperature = 23.0; // 23 degrees celsius
 float temperature, error, last_error, integral, derivative, fanspeed;
@@ -31,6 +31,8 @@ void setup()
 
   // set fan pins as fanspeed
   pinMode(FAN_SPEED_PIN, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
 
   // initialize the PID variables
   last_error = 0;
@@ -51,7 +53,7 @@ void loop()
   }
 
   // Calculate the error
-  error = setpointTemperature - temperature;
+  error = temperature - setpointTemperature;
 
   // Calculate the integral and derivative terms
   integral += error;
@@ -75,7 +77,7 @@ void loop()
   // set fan direction
   digitalWrite(IN1, LOW);
   digitalWrite(IN2, HIGH);
-  analogWrite(FAN_SPEED_PIN, 254);
+  analogWrite(FAN_SPEED_PIN, fanspeed);
 
   // Save the current error for the next iteration
   last_error = error;
